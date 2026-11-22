@@ -35,7 +35,7 @@ uses
   // RTL
   System.SysUtils,
   // Posix
-  Posix.Dlfcn,
+  Posix.Base, Posix.Dlfcn,
   // DW
   DW.iOSapi.Network;
 
