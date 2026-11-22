@@ -145,12 +145,12 @@ end;
 
 procedure TNWPathMonitorTests.StatusFromValue(const AValue: Cardinal; const AExpected: Integer);
 begin
-  Assert.AreEqual(AExpected, Ord(NWPathStatusFromValue(AValue)));
+  Assert.AreEqual<Integer>(AExpected, Ord(NWPathStatusFromValue(AValue)));
 end;
 
 procedure TNWPathMonitorTests.InterfaceTypeFromValue(const AValue: Cardinal; const AExpected: Integer);
 begin
-  Assert.AreEqual(AExpected, Ord(NWInterfaceTypeFromValue(AValue)));
+  Assert.AreEqual<Integer>(AExpected, Ord(NWInterfaceTypeFromValue(AValue)));
 end;
 
 procedure TNWPathMonitorTests.InterfaceTypeRoundTrip;
@@ -158,7 +158,7 @@ var
   LType: TNWInterfaceType;
 begin
   for LType := Low(TNWInterfaceType) to High(TNWInterfaceType) do
-    Assert.AreEqual(Ord(LType), Ord(NWInterfaceTypeFromValue(NWInterfaceTypeToValue(LType))));
+    Assert.AreEqual<Integer>(Ord(LType), Ord(NWInterfaceTypeFromValue(NWInterfaceTypeToValue(LType))));
 end;
 
 procedure TNWPathMonitorTests.EmptyPathIsInvalid;
@@ -166,7 +166,7 @@ var
   LPath: TNWPath;
 begin
   LPath := TNWPath.Empty;
-  Assert.AreEqual(Ord(TNWPathStatus.Invalid), Ord(LPath.Status));
+  Assert.AreEqual<Integer>(Ord(TNWPathStatus.Invalid), Ord(LPath.Status));
   Assert.IsFalse(LPath.IsConnected);
   Assert.IsTrue(LPath.InterfaceTypes = []);
 end;
@@ -183,7 +183,7 @@ var
   LPath: TNWPath;
 begin
   LPath := MakePath(TNWPathStatus.Satisfied, [TNWInterfaceType.Cellular, TNWInterfaceType.WiFi, TNWInterfaceType.Other]);
-  Assert.AreEqual(Ord(TNWInterfaceType.WiFi), Ord(LPath.PrimaryInterfaceType));
+  Assert.AreEqual<Integer>(Ord(TNWInterfaceType.WiFi), Ord(LPath.PrimaryInterfaceType));
 end;
 
 procedure TNWPathMonitorTests.PrimaryInterfaceWiredBeforeCellular;
@@ -191,7 +191,7 @@ var
   LPath: TNWPath;
 begin
   LPath := MakePath(TNWPathStatus.Satisfied, [TNWInterfaceType.Cellular, TNWInterfaceType.Wired]);
-  Assert.AreEqual(Ord(TNWInterfaceType.Wired), Ord(LPath.PrimaryInterfaceType));
+  Assert.AreEqual<Integer>(Ord(TNWInterfaceType.Wired), Ord(LPath.PrimaryInterfaceType));
 end;
 
 procedure TNWPathMonitorTests.PrimaryInterfaceLoopbackOnly;
@@ -199,14 +199,14 @@ var
   LPath: TNWPath;
 begin
   LPath := MakePath(TNWPathStatus.Satisfied, [TNWInterfaceType.Loopback]);
-  Assert.AreEqual(Ord(TNWInterfaceType.Loopback), Ord(LPath.PrimaryInterfaceType));
+  Assert.AreEqual<Integer>(Ord(TNWInterfaceType.Loopback), Ord(LPath.PrimaryInterfaceType));
   LPath.InterfaceTypes := [TNWInterfaceType.Loopback, TNWInterfaceType.Other];
-  Assert.AreEqual(Ord(TNWInterfaceType.Other), Ord(LPath.PrimaryInterfaceType));
+  Assert.AreEqual<Integer>(Ord(TNWInterfaceType.Other), Ord(LPath.PrimaryInterfaceType));
 end;
 
 procedure TNWPathMonitorTests.PrimaryInterfaceEmptyIsOther;
 begin
-  Assert.AreEqual(Ord(TNWInterfaceType.Other), Ord(MakePath(TNWPathStatus.Unsatisfied, []).PrimaryInterfaceType));
+  Assert.AreEqual<Integer>(Ord(TNWInterfaceType.Other), Ord(MakePath(TNWPathStatus.Unsatisfied, []).PrimaryInterfaceType));
 end;
 
 procedure TNWPathMonitorTests.IsEqualComparesAllFields;
@@ -262,8 +262,8 @@ begin
     LMonitor.Start;
     LMonitor.Stop;
     LMonitor.Stop;
-    Assert.AreEqual(1, TFakePlatformNWPathMonitor.StartCount);
-    Assert.AreEqual(1, TFakePlatformNWPathMonitor.StopCount);
+    Assert.AreEqual<Integer>(1, TFakePlatformNWPathMonitor.StartCount);
+    Assert.AreEqual<Integer>(1, TFakePlatformNWPathMonitor.StopCount);
   finally
     LMonitor.Free;
   end;
@@ -279,7 +279,7 @@ begin
     LMonitor.OnPathChanged := PathChangedHandler;
     LMonitor.Start;
     TFakePlatformNWPathMonitor.LastInstance.Simulate(MakePath(TNWPathStatus.Satisfied, [TNWInterfaceType.WiFi]));
-    Assert.AreEqual(1, FEventCount);
+    Assert.AreEqual<Integer>(1, FEventCount);
     Assert.IsTrue(FLastPath.IsConnected);
   finally
     LMonitor.Free;
@@ -297,7 +297,7 @@ begin
     TFakePlatformNWPathMonitor.LastInstance.Simulate(MakePath(TNWPathStatus.Unsatisfied, []));
     TFakePlatformNWPathMonitor.LastInstance.Simulate(MakePath(TNWPathStatus.Satisfied, [TNWInterfaceType.Cellular]));
     Assert.IsTrue(LMonitor.Path.IsConnected);
-    Assert.AreEqual(Ord(TNWInterfaceType.Cellular), Ord(LMonitor.Path.PrimaryInterfaceType));
+    Assert.AreEqual<Integer>(Ord(TNWInterfaceType.Cellular), Ord(LMonitor.Path.PrimaryInterfaceType));
   finally
     LMonitor.Free;
   end;
@@ -314,7 +314,7 @@ begin
   TFakePlatformNWPathMonitor.LastInstance.Simulate(MakePath(TNWPathStatus.Satisfied, [TNWInterfaceType.WiFi]));
   LMonitor.Free;
   CheckSynchronize(0);
-  Assert.AreEqual(0, FEventCount);
+  Assert.AreEqual<Integer>(0, FEventCount);
 end;
 
 end.
